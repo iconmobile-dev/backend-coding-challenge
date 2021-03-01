@@ -46,12 +46,6 @@ func TestUserInsert(t *testing.T) {
 		})
 	})
 
-	t.Run("insert valid User with db == failingDB", func(t *testing.T) {
-		user := validUser
-		err := user.insert(failingDB)
-		assert.Error(t, err)
-	})
-
 	t.Run(`insert invalid User with User.Email == ""`, func(t *testing.T) {
 		user := validUser
 		user.Email = ""

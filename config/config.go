@@ -1,6 +1,7 @@
 package config
 
 import (
+	_ "embed"
 	"os"
 
 	"github.com/BurntSushi/toml"
@@ -55,6 +56,19 @@ type Redis struct {
 // Crypto contains encryption keys
 type Crypto struct {
 	TokenValuePassword string
+}
+
+//go:embed config_dev.toml
+var configDev string
+
+func LoadDefaultConfig() (*Config, error) {
+	var c Config
+	_, err := toml.Decode(configDev, &c)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to decode default config")
+	}
+
+	return &c, nil
 }
 
 // Load reads info from TOML file at relative path

@@ -42,50 +42,35 @@ func (u *User) Insert(db *storage.DB, cache *storage.Cache) error {
 		return errors.E(err, errors.Unprocessable)
 	}
 
+	// hash password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return errors.E(err, errors.Internal)
 	}
 	u.Password = string(hashedPassword)
 
-	us, err := ListUsers(UserListParams{
-		Filter: UserFilter{
-			Email: &sqlutil.StringFilter{
-				Is: &u.Email,
-			},
-		},
-	}, db)
+	// is the email already in the database? it must be unique
+	_, err = UserByEmail(u.Email, db)
 	if err != nil {
-		return errors.E(err)
-	}
-	if len(us) != 0 {
+		var errorsError *errors.Error
+		if !errors.As(err, &errorsError) || errorsError.Kind != errors.NotFound {
+			return errors.E(err)
+		}
+	} else {
 		msg := fmt.Sprintf("user with email %v does already exist", u.Email)
 		return errors.E(fmt.Errorf(msg), errors.Conflict, msg)
 	}
 
-	err = u.insert(db)
-	if err != nil {
-		return errors.E(err)
-	}
-
-	return nil
-}
-
-// insert inserts a User in database
-// Should not be called without prior data validation!
-func (u *User) insert(db *storage.DB) error {
-	var returned User
-	// insert
+	// insert to database
+	var createdUser User
 	sql := `INSERT INTO users (email, password, firstname, lastname)
-			VALUES ($1, $2, $3, $4)
-			RETURNING *`
-	err := db.Get(&returned, sql, u.Email, u.Password, u.FirstName, u.LastName)
+			VALUES ($1, $2, $3, $4) RETURNING *`
+
+	err = db.Get(&createdUser, sql, u.Email, u.Password, u.FirstName, u.LastName)
 	if err != nil {
 		return errors.E(err, errors.Internal)
 	}
-
-	*u = returned
-
+	*u = createdUser
 	return nil
 }
 
@@ -103,7 +88,7 @@ func (u *User) Update(oldHashedPassword string, oldPassword *string, db *storage
 	if err != nil {
 		return errors.E(err, errors.Unprocessable)
 	}
-
+	// check if password has changed
 	if u.Password != oldHashedPassword && oldPassword != nil {
 		err := bcrypt.CompareHashAndPassword([]byte(oldHashedPassword), []byte(*oldPassword))
 		if err != nil {
@@ -115,37 +100,20 @@ func (u *User) Update(oldHashedPassword string, oldPassword *string, db *storage
 			log.Error("bcrypt.GenerateFromPassword err:", err)
 			return errors.E(err, errors.Internal, "Internal server error")
 		}
-
 		u.Password = string(hashedPassword)
 	}
 
-	err = u.update(db)
-	if err != nil {
-		return errors.E(err)
-	}
-
-	return nil
-}
-
-// update updates User in database
-// Should not be called without prior data validation!
-func (u *User) update(db *storage.DB) error {
-	var returned User
-	// update
+	// update in database
+	var updatedUser User
 	sql := `UPDATE users
-				SET password=$1,
-					firstname=$2,
-					lastname=$3
-				WHERE
-					id=$4 RETURNING *`
+			SET password=$1, firstname=$2, lastname=$3
+			WHERE id=$4 RETURNING *`
 
-	err := db.Get(&returned, sql, u.Password, u.FirstName, u.LastName, u.ID)
+	err = db.Get(&updatedUser, sql, u.Password, u.FirstName, u.LastName, u.ID)
 	if err != nil {
 		return errors.E(err, errors.Internal)
 	}
-
-	*u = returned
-
+	*u = updatedUser
 	return nil
 }
 
@@ -180,11 +148,25 @@ func (u *User) IsCorrectPassword(password string) error {
 	return nil
 }
 
-// UserByID loads User with given ID, returns nil if not found
+// UserByID loads User with given ID, returns if not found
 func UserByID(id int, db *storage.DB) (User, error) {
 	u := User{}
 	q := `SELECT * FROM users WHERE id=$1 LIMIT 1;`
 	if err := db.Get(&u, q, id); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return u, errors.E(err, errors.NotFound)
+		}
+		return u, errors.E(err, errors.Internal)
+	}
+
+	return u, nil
+}
+
+// UserByEmail loads User with given email, returns nil if not found
+func UserByEmail(email string, db *storage.DB) (User, error) {
+	u := User{}
+	q := `SELECT * FROM users WHERE email=$1 LIMIT 1;`
+	if err := db.Get(&u, q, email); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return u, errors.E(err, errors.NotFound)
 		}

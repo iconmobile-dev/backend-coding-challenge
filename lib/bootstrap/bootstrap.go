@@ -15,16 +15,22 @@ func LoggerAndConfig(serverName string, test bool) (logger.Logger, config.Config
 	// init logger
 	log := logger.Logger{MinLevel: "verbose"}
 
+	var cfg *config.Config
+	var err error
 	// load config
 	configFile := os.Getenv("CONFIG_FILE")
 	if configFile == "" {
-		log.Error("CONFIG_FILE env var missing\nuse: export CONFIG_FILE=<config_file_path>")
-		os.Exit(1)
-	}
-	cfg, err := config.Load(configFile)
-	if err != nil {
-		log.Error(err, "config load")
-		os.Exit(1)
+		cfg, err = config.LoadDefaultConfig()
+		if err != nil {
+			log.Error(err, "config load")
+			os.Exit(1)
+		}
+	} else {
+		cfg, err = config.Load(configFile)
+		if err != nil {
+			log.Error(err, "config load")
+			os.Exit(1)
+		}
 	}
 
 	// set service name
