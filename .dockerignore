@@ -1,0 +1,8 @@
+*
+!cmd
+!config/config.go
+!lib
+!pkg
+!services
+!go.mod
+!go.sum

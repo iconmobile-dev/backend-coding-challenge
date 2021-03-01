@@ -1,0 +1,56 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Python related
+__pycache__
+*.pyc
+
+# no images
+*.png
+*.gif
+*.jpg
+*.jpeg
+
+# Test binary, build with `go test -c`
+*.test
+.testCoverage.txt
+
+# old stuff
+*_old.*
+
+# IDE specific
+.vscode
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+bin
+*_old.*
+_*
+*.paw
+.build_counter
+.DS_Store
+.testCoverage.txt
+
+# GAE config files
+# *.yaml
+
+# built project files
+services/api/api
+
+# temp. copied config
+services/*/config*
+.idea
+/k8s/databases/postgresql/credentials.json
+
+# generated doc html
+docs/api/html/index.html
+*.html
+
+# scripts config file
+libs/general/config/config_script.toml
+
+# coverage
+.coverage

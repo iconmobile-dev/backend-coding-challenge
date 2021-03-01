@@ -1,0 +1,25 @@
+# Dev config for running tests and building under Mac
+# a local Docker Compose cluster needs to run with Postgres, Redis, etc.
+[server]
+env = "dev"
+name = "" # "set config server name in main.go"
+portuser = 8080
+
+[database]
+host = "localhost"
+name = "postgres"
+user = "postgres"
+password = "postgres"
+port = "5432"
+sslmode = "disable"
+
+[redis]
+host = "localhost"
+port = 6379
+password = ""
+
+[logging]
+minlevel = "verbose"
+timeformat = "15:04:05.000"
+usecolor = true
+reportcaller = true

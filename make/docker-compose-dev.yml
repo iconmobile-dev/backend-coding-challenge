@@ -1,0 +1,24 @@
+version: '2.1'
+
+services:
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - 6379:6379
+
+  postgres:
+    image: "postgres:11-alpine"
+    ports:
+      - 5432:5432
+    volumes:
+      - ./../db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USERDB=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 20

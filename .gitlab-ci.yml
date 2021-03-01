@@ -1,0 +1,81 @@
+image: "golang:latest"
+
+services:
+  - "postgres:11-alpine"
+  - "redis:alpine"
+
+variables:
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_USERDB: postgres
+  CONFIG_FILE: $CI_PROJECT_DIR/config/config_ci.toml
+
+.go-cache:
+  variables:
+    GOPATH: $CI_PROJECT_DIR/.go
+  before_script:
+    - mkdir -p .go
+  cache:
+    paths:
+      - .go/pkg/mod/
+
+stages:
+  - test
+  - deploy
+
+test:
+  stage: test
+  extends: .go-cache
+  script:
+    - cat /etc/*-release
+    - uname -pmnvrs
+    - date
+    - go version
+    - echo $CI
+    - echo "------------"
+    - pwd
+    - ls -al
+    - echo "-----"
+    - echo set gitlab token
+    - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@git.iconmobile.com".insteadOf "https://git.iconmobile.com"
+    - echo "-----"
+    - echo set go-core private repo
+    - go env -w GOPRIVATE=git.iconmobile.com/shared
+    - echo "-----"
+    - echo download dependencies
+    - go mod download
+    - echo "-----"
+    - echo database init ...
+    - go build -o dbinit $CI_PROJECT_DIR/tools/dbinit
+    - ./dbinit -schemaPath="$CI_PROJECT_DIR/db/schema.sql"
+    - echo "-----"
+    - echo test swagger file generation ...
+    - export PATH="$GOPATH/bin:$PATH"
+    - go get -u github.com/swaggo/swag/cmd/swag
+    - swag init -p pascalcase -g cmd/gateway/main.go -o docs/swagger --md docs
+    - echo installing dependencies ...
+    - go get golang.org/x/lint/golint
+    - echo running tests ...
+    - make test
+
+deploy:
+  stage: deploy
+  script:
+    - export PATH="$GOPATH/bin:$PATH"
+    - go get -u github.com/swaggo/swag/cmd/swag
+    - curl -sL https://deb.nodesource.com/setup_15.x | bash -
+    - apt-get install -y nodejs
+    - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.10
+    - export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+    - yarn --version
+    - yarn global add redoc-cli
+    - yarn global add netlify-cli
+    - swag init -p pascalcase -g cmd/gateway/main.go -o docs/swagger --md docs
+    - redoc-cli bundle docs/swagger/swagger.yaml
+    - mkdir /tmp/redoc
+    - mv redoc-static.html /tmp/redoc/index.html
+    - netlify deploy --site $NETLIFY_APIDOCS_SIDE_ID --auth $NETLIFY_APIDOCS_DEPLOY_TOKEN --dir=/tmp/redoc --prod
+  dependencies:
+    - test
+  only:
+    - master
