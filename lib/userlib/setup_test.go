@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/iconmobile-dev/backend-coding-challenge/lib/storage"
+	"github.com/iconmobile-dev/go-coding-challenge/lib/storage"
 	"github.com/jmoiron/sqlx"
 )
 

@@ -4,8 +4,8 @@ import (
 	"flag"
 	"os"
 
-	"github.com/iconmobile-dev/backend-coding-challenge/lib/bootstrap"
-	"github.com/iconmobile-dev/backend-coding-challenge/lib/storage"
+	"github.com/iconmobile-dev/go-coding-challenge/lib/bootstrap"
+	"github.com/iconmobile-dev/go-coding-challenge/lib/storage"
 )
 
 var schemaPath = flag.String("schemaPath", "", "create schema with given sql schema file")

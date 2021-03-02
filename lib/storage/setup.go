@@ -1,8 +1,8 @@
 package storage
 
 import (
-	"github.com/iconmobile-dev/backend-coding-challenge/config"
-	"github.com/iconmobile-dev/backend-coding-challenge/lib/bootstrap"
+	"github.com/iconmobile-dev/go-coding-challenge/config"
+	"github.com/iconmobile-dev/go-coding-challenge/lib/bootstrap"
 	"github.com/iconmobile-dev/go-core/logger"
 )
 

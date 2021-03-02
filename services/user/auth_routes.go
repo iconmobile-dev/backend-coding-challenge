@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/iconmobile-dev/backend-coding-challenge/lib/handlers"
+	"github.com/iconmobile-dev/go-coding-challenge/lib/handlers"
 )
 
 type loginRequest struct {

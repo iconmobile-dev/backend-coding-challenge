@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/iconmobile-dev/backend-coding-challenge/lib/bootstrap"
-	"github.com/iconmobile-dev/backend-coding-challenge/lib/storage"
-	"github.com/iconmobile-dev/backend-coding-challenge/services/user"
+	"github.com/iconmobile-dev/go-coding-challenge/lib/bootstrap"
+	"github.com/iconmobile-dev/go-coding-challenge/lib/storage"
+	"github.com/iconmobile-dev/go-coding-challenge/services/user"
 )
 
 func main() {

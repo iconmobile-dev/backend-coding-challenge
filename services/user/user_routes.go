@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/iconmobile-dev/backend-coding-challenge/lib/handlers"
-	"github.com/iconmobile-dev/backend-coding-challenge/lib/userlib"
+	"github.com/iconmobile-dev/go-coding-challenge/lib/handlers"
+	"github.com/iconmobile-dev/go-coding-challenge/lib/userlib"
 )
 
 type userResponse struct {

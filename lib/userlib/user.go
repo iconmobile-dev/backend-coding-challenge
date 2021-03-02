@@ -11,8 +11,8 @@ import (
 	"github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/iconmobile-dev/backend-coding-challenge/lib/storage"
-	"github.com/iconmobile-dev/backend-coding-challenge/pkg/sqlutil"
+	"github.com/iconmobile-dev/go-coding-challenge/lib/storage"
+	"github.com/iconmobile-dev/go-coding-challenge/pkg/sqlutil"
 )
 
 // User contains the database entry

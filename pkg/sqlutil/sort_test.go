@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/iconmobile-dev/backend-coding-challenge/lib/storage"
-	"github.com/iconmobile-dev/backend-coding-challenge/pkg/ptrutil"
-	"github.com/iconmobile-dev/backend-coding-challenge/pkg/sqlutil"
+	"github.com/iconmobile-dev/go-coding-challenge/lib/storage"
+	"github.com/iconmobile-dev/go-coding-challenge/pkg/ptrutil"
+	"github.com/iconmobile-dev/go-coding-challenge/pkg/sqlutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

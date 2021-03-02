@@ -1,6 +1,7 @@
 package config
 
 import (
+	// to embed default config
 	_ "embed"
 	"os"
 
@@ -61,6 +62,7 @@ type Crypto struct {
 //go:embed config_dev.toml
 var configDev string
 
+// LoadDefaultConfig loads the default config
 func LoadDefaultConfig() (*Config, error) {
 	var c Config
 	_, err := toml.Decode(configDev, &c)

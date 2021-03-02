@@ -6,7 +6,7 @@ RUN go env -w GOPRIVATE=git.iconmobile.com/shared
 
 ARG service_name
 
-WORKDIR /go/src/github.com/iconmobile-dev/backend-coding-challenge/
+WORKDIR /go/src/github.com/iconmobile-dev/go-coding-challenge/
 
 # Copy everything
 COPY . .

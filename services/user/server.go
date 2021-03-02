@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/iconmobile-dev/backend-coding-challenge/config"
-	"github.com/iconmobile-dev/backend-coding-challenge/lib/bootstrap"
-	"github.com/iconmobile-dev/backend-coding-challenge/lib/handlers"
-	"github.com/iconmobile-dev/backend-coding-challenge/lib/storage"
+	"github.com/iconmobile-dev/go-coding-challenge/config"
+	"github.com/iconmobile-dev/go-coding-challenge/lib/bootstrap"
+	"github.com/iconmobile-dev/go-coding-challenge/lib/handlers"
+	"github.com/iconmobile-dev/go-coding-challenge/lib/storage"
 	"github.com/iconmobile-dev/go-core/logger"
 )
 
