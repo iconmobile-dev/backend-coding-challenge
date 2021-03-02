@@ -1,4 +1,4 @@
-# Backend Coding Challenge
+# Go Coding Challenge
 
 We are looking for engineers who can build web services which are simple, stable and secure and who have the user in mind.
 
